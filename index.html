@@ -7,8 +7,8 @@
     <style>
         /* --- 1. 基础设置 --- */
         :root {
-            --neon-cyan: #00f3ff;    /* 科技青 */
-            --neon-pink: #ff0055;    /* 警告红 */
+            --neon-cyan: #00f3ff;    /* 科技青 (常规标签) */
+            --neon-pink: #ff0055;    /* 警告红 (高能标签) */
             --neon-green: #00ff41;   /* 完成绿 */
             --neon-yellow: #ffcc00;  /* 未完结黄 */
             --card-bg: rgba(10, 15, 30, 0.75);
@@ -130,12 +130,14 @@
             border-radius: 4px;
         }
         
+        /* 红色特殊标签 */
         .tag.special {
             border-color: var(--neon-pink);
             color: var(--neon-pink);
             box-shadow: 0 0 5px rgba(255, 0, 85, 0.2);
         }
 
+        /* 状态标签 */
         .tag.ongoing {
             border-color: var(--neon-yellow);
             color: var(--neon-yellow);
@@ -216,6 +218,26 @@
                     时空融合的那晚，当何正钰去找陈嘉岚时，都发生了什么？
                 </div>
                 <div class="card-status">已完结</div>
+            </div>
+        </a>
+
+        <a href="https://fuba86.github.io/xiongdiqingren/" class="tech-card" target="_blank">
+            <div class="card-content">
+                <div class="card-title">兄弟情人</div>
+                
+                <div class="tag-row">
+                    <span class="tag ongoing">⚠ 未完结</span>
+                    <span class="tag">同人</span>
+                    <span class="tag special">强制爱</span>
+                    <span class="tag special">监禁</span>
+                    <span class="tag special">暴力描写</span>
+                    <span class="tag special">非典型情感关系</span>
+                </div>
+
+                <div class="card-desc">
+                    最近大哥遇到了点小麻烦，一个叫何正钰的律师在调查他。
+                </div>
+                <div class="card-status">连载中...</div>
             </div>
         </a>
 
