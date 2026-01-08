@@ -22,7 +22,7 @@
             margin: 0;
             padding: 20px;
             min-height: 100vh;
-            font-family: 'Microsoft YaHei', 'SimHei', sans-serif; /* 改回常规字体，看着更舒服 */
+            font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
             color: #ffffff; 
             display: flex;
             flex-direction: column;
@@ -61,7 +61,6 @@
             font-size: 2.2em;
             letter-spacing: 2px;
             text-align: center;
-            /* 保留一点点光晕让它在星空里不违和，但去掉了复杂的边框 */
             text-shadow: 0 0 10px var(--neon-cyan);
             font-weight: bold;
         }
@@ -91,7 +90,7 @@
             min-height: 240px;
             box-shadow: 0 0 15px rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
-            border-radius: 8px; /* 加一点圆角，看起来没那么硬核 */
+            border-radius: 8px;
         }
 
         .tech-card:hover {
@@ -124,21 +123,19 @@
         }
 
         .tag {
-            font-size: 0.85em; /* 稍微调大一点字号 */
+            font-size: 0.85em;
             padding: 4px 10px;
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
             border-radius: 4px;
         }
         
-        /* 特殊标签颜色 */
         .tag.special {
             border-color: var(--neon-pink);
             color: var(--neon-pink);
             box-shadow: 0 0 5px rgba(255, 0, 85, 0.2);
         }
 
-        /* 状态标签（黄色-未完结） */
         .tag.ongoing {
             border-color: var(--neon-yellow);
             color: var(--neon-yellow);
@@ -146,7 +143,6 @@
             box-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
         }
 
-        /* 状态标签（绿色-已完结） */
         .tag.completed {
             border-color: var(--neon-green);
             color: var(--neon-green);
@@ -185,7 +181,7 @@
 
     <div class="game-container">
 
-        <a href="./gurenmeng/index.html" class="tech-card" target="_blank">
+        <a href="https://fuba86.github.io/gurenmeng/" class="tech-card" target="_blank">
             <div class="card-content">
                 <div class="card-title ancient-font">故人梦</div>
                 
@@ -204,7 +200,7 @@
             </div>
         </a>
 
-        <a href="./jialanzhengyu/index.html" class="tech-card" target="_blank">
+        <a href="https://fuba86.github.io/jialanzhengyu/" class="tech-card" target="_blank">
             <div class="card-content">
                 <div class="card-title">融合之后</div>
                 
