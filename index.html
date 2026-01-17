@@ -242,28 +242,45 @@
             </div>
         </a>
 
-        <a href="https://fuba86.github.io/huangguanyule/" class="tech-card" target="_blank">
-            <div class="card-content">
-                <div class="card-title">经纪公司模拟器</div>
-                
-                <div class="tag-row">
-                    <span class="tag ongoing">⚠ 开发测试中</span>
-                    <span class="tag">养成</span>
-                    <span class="tag special">水仙</span>
-                    <span class="tag special">双性</span>
-                    <span class="tag special">生子</span>
-                </div>
-
-                <div class="card-desc">
-                    娱乐帝国的幕后操盘，一段充满变数的养成之旅（当前为测试版本）。
-                </div>
-                <div class="card-status">制作中...</div>
-            </div>
-        </a>
+<a href="javascript:void(0);" onclick="checkAccess(event, 'https://fuba86.github.io/huangguanyule/')" class="tech-card">
+    <div class="card-content">
+        <div class="card-title">经纪公司模拟器</div>
         
+        <div class="tag-row">
+            <span class="tag ongoing">🔒 内部测试</span>
+            <span class="tag">养成</span>
+            <span class="tag special">水仙</span>
+            <span class="tag special">双性</span>
+            <span class="tag special">生子</span>
+        </div>
+
+        <div class="card-desc">
+            【内测专区】请输入授权密码进入。
+        </div>
+        <div class="card-status">制作中...</div>
     </div>
+</a>
+
+    </div>
+
+<script>
+    function checkAccess(event, url) {
+        // 在此处设置你的内测密码
+        const CORRECT_PASSWORD = "你的密码123"; 
+        
+        const userInput = prompt("该游戏处于内测阶段，请输入访问密码：");
+
+        if (userInput === CORRECT_PASSWORD) {
+            // 密码正确，打开新窗口跳转
+            window.open(url, '_blank');
+        } else if (userInput !== null) {
+            // 密码错误（且用户没点取消）
+            alert("密码错误，暂无访问权限。");
+        }
+    }
+</script>
+
 
 </body>
 </html>
-
 
