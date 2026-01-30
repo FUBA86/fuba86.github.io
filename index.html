@@ -7,11 +7,13 @@
     <style>
         /* --- 1. 基础设置 --- */
         :root {
-            --neon-cyan: #00f3ff;    /* 科技青 (常规标签) */
-            --neon-pink: #ff0055;    /* 警告红 (高能标签) */
+            --neon-cyan: #00f3ff;    /* 科技青 */
+            --neon-pink: #ff0055;    /* 警告红 */
             --neon-green: #00ff41;   /* 完成绿 */
             --neon-yellow: #ffcc00;  /* 未完结黄 */
-            --card-bg: rgba(10, 15, 30, 0.75);
+            --neon-purple: #bd00ff;  /* 核心类型紫 */
+            --card-bg: rgba(16, 24, 45, 0.65); /* 更深邃的半透明蓝 */
+            --golden-ratio: 1.618;   /* 黄金比例常数 */
         }
 
         * {
@@ -32,7 +34,7 @@
         }
 
         /* --- 2. 背景图层 --- */
-        。bg-image {
+        .bg-image {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://cdn.pixabay.com/photo/2016/11/29/02/20/cosmos-1866820_1280.jpg') no-repeat center center;
@@ -40,76 +42,116 @@
             z-index: -2; 
         }
 
-        /* --- 3. 黑色遮罩层 --- */
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); 
+            background: radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
             z-index: -1;
         }
 
-        /* --- 4. 内容区域 --- */
-        h1, .game-container {
+        /* --- 3. 标题样式 --- */
+        h1 {
+            margin-top: 50px;
+            margin-bottom: 60px;
+            font-size: 2.5em;
+            letter-spacing: 4px;
+            text-align: center;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            font-weight: 300;
             position: relative;
             z-index: 10;
         }
 
-        /* --- 标题样式 --- */
-        h1 {
-            margin-top: 40px;
-            margin-bottom: 50px;
-            font-size: 2.2em;
-            letter-spacing: 2px;
-            text-align: center;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            font-weight: bold;
-        }
-
-        /* --- 游戏列表布局 --- */
+        /* --- 4. 游戏列表布局 (Grid) --- */
         .game-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            /* 关键修改：minmax 改为 450px。
+               这会迫使卡片变宽，当屏幕不够宽时自动换行，保持横向长方形的视觉感 */
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
             gap: 40px;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1400px; /* 允许容器更宽 */
             padding-bottom: 50px;
+            z-index: 10;
         }
 
-        /* --- 卡片核心样式 --- */
+        /* --- 5. 黄金比例卡片核心样式 --- */
         .tech-card {
             position: relative;
             background: var(--card-bg);
-            border: 1px solid rgba(0, 243, 255, 0.4);
-            padding: 30px;
+            /* 黄金比例核心代码：宽 / 高 = 1.618 */
+            aspect-ratio: 1.618 / 1; 
+            
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 35px;
             text-decoration: none;
             color: #ffffff; 
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* 更平滑的动画 */
+            
+            /* 弹性布局：让内容分布在四个角落或上下撑开 */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 240px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            border-radius: 8px;
+            
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            overflow: hidden; /* 防止内容溢出破坏形状 */
         }
 
+        /* 悬停效果 */
         .tech-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(20, 30, 50, 0.85);
             border-color: var(--neon-cyan);
-            background: rgba(10, 15, 30, 0.95);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+        }
+
+        /* 装饰性光条 */
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--neon-cyan), transparent);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .tech-card:hover::before {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* 卡片内容布局区 */
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
         /* 游戏标题 */
         .card-title {
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 5px rgba(0,243,255,0.3);
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
             font-weight: bold;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+        
+        .tech-card:hover .card-title {
+            color: var(--neon-cyan);
         }
 
-        /* 古风字体类 */
+        /* 古风字体 */
         .ancient-font {
             font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
         }
@@ -119,57 +161,81 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 15px;
         }
 
         .tag {
-            font-size: 0.85em;
-            padding: 4px 10px;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            border-radius: 4px;
+            font-size: 0.75em;
+            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.8);
+            border-radius: 20px; /* 胶囊形状更现代 */
+            background: rgba(0,0,0,0.2);
+            transition: all 0.3s;
         }
-        
-        /* 红色特殊标签 */
+
+        /* 类型标签 (紫色) */
+        .tag.genre {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            background: rgba(189, 0, 255, 0.1);
+            font-weight: bold;
+        }
+
+        /* 特殊标签 (红色) */
         .tag.special {
             border-color: var(--neon-pink);
             color: var(--neon-pink);
-            box-shadow: 0 0 5px rgba(255, 0, 85, 0.2);
+            background: rgba(255, 0, 85, 0.1);
         }
-
+        
         /* 状态标签 */
         .tag.ongoing {
-            border-color: var(--neon-yellow);
             color: var(--neon-yellow);
-            font-weight: bold;
-            box-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
+            border-color: var(--neon-yellow);
         }
-
         .tag.completed {
-            border-color: var(--neon-green);
             color: var(--neon-green);
-            font-weight: bold;
-            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+            border-color: var(--neon-green);
         }
 
         /* 描述文字 */
         .card-desc {
-            font-size: 0.95em;
+            font-size: 1em;
             line-height: 1.6;
-            color: #d1d5db;
-            margin-bottom: 20px;
+            color: #cbd5e1;
+            margin-top: 15px;
+            
+            /* 限制行数，防止破坏黄金比例 */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* 底部状态 */
-        .card-status {
+        /* 底部状态显示 */
+        .status-badge {
             font-size: 0.8em;
-            color: #888;
-            text-align: right;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 10px;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            text-transform: uppercase;
         }
-        .tech-card:hover .card-status {
-            color: var(--neon-cyan);
+
+        /* --- 6. 移动端适配 (重要) --- */
+        @media (max-width: 768px) {
+            .game-container {
+                /* 手机上改为单列 */
+                grid-template-columns: 1fr; 
+                padding: 0 10px;
+            }
+            .tech-card {
+                /* 手机上取消黄金比例，否则内容会显示不全 */
+                aspect-ratio: auto; 
+                min-height: 220px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
         }
 
     </style>
@@ -184,88 +250,94 @@
     <div class="game-container">
 
         <a href="https://fuba86.github.io/gurenmeng/" class="tech-card" target="_blank">
-            <div class="card-content">
-                <div class="card-title ancient-font">故人梦</div>
-                
+            <div class="card-header">
                 <div class="tag-row">
-                    <span class="tag ongoing">⚠ 未完结</span>
-                    <span class="tag">古风</span>
-                    <span class="tag">仙侠</span>
-                    <span class="tag special">耽美</span>
-                    <span class="tag special">诛仙同人</span>
+                    <span class="tag genre">剧情向</span>
+                    <span class="tag ongoing">连载中</span>
                 </div>
-
+                <div class="card-title ancient-font">故人梦</div>
                 <div class="card-desc">
-                    定海庄，萧逸才在一棵树下找到了昏迷的青龙。
+                    定海庄，萧逸才在一棵树下找到了昏迷的青龙。一段尘封的往事，随着二人的重逢缓缓揭开帷幕...
                 </div>
-                <div class="card-status">连载中...</div>
+            </div>
+            
+            <div class="card-footer">
+                <div class="tag-row">
+                    <span class="tag">古风仙侠</span>
+                    <span class="tag special">诛仙同人</span>
+                    <span class="tag special">耽美</span>
+                </div>
+                <span class="status-badge">Updating</span>
             </div>
         </a>
 
         <a href="https://fuba86.github.io/jialanzhengyu/" class="tech-card" target="_blank">
-            <div class="card-content">
-                <div class="card-title">融合之后</div>
-                
+            <div class="card-header">
                 <div class="tag-row">
-                    <span class="tag completed">✔ 已完结</span>
-                    <span class="tag">同人</span>
+                    <span class="tag genre">剧情向</span>
+                    <span class="tag completed">已完结</span>
+                </div>
+                <div class="card-title">融合之后</div>
+                <div class="card-desc">
+                    时空融合的那晚，当何正钰去找陈嘉岚时，都发生了什么？两个世界的法则碰撞，情感与本能的交织。
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="tag-row">
                     <span class="tag">ABO</span>
                     <span class="tag special">女A男O</span>
                     <span class="tag special">强制</span>
-                    <span class="tag special">男生子</span>
                 </div>
-
-                <div class="card-desc">
-                    时空融合的那晚，当何正钰去找陈嘉岚时，都发生了什么？
-                </div>
-                <div class="card-status">已完结</div>
+                <span class="status-badge">Completed</span>
             </div>
         </a>
 
         <a href="https://fuba86.github.io/xiongdiqingren/" class="tech-card" target="_blank">
-            <div class="card-content">
-                <div class="card-title">兄弟情人</div>
-                
+            <div class="card-header">
                 <div class="tag-row">
-                    <span class="tag ongoing">⚠ 未完结</span>
-                    <span class="tag">同人</span>
+                    <span class="tag genre">剧情向</span>
+                    <span class="tag ongoing">连载中</span>
+                </div>
+                <div class="card-title">兄弟情人</div>
+                <div class="card-desc">
+                    最近大哥遇到了点小麻烦，一个叫何正钰的律师在调查他。在这场猫鼠游戏中，谁才是真正的猎物？
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="tag-row">
                     <span class="tag special">强制爱</span>
                     <span class="tag special">监禁</span>
-                    <span class="tag special">暴力描写</span>
-                    <span class="tag special">非典型情感关系</span>
+                    <span class="tag special">非典型关系</span>
                 </div>
-
-                <div class="card-desc">
-                    最近大哥遇到了点小麻烦，一个叫何正钰的律师在调查他。
-                </div>
-                <div class="card-status">连载中...</div>
+                <span class="status-badge">Updating</span>
             </div>
         </a>
 
-<a href="javascript:void(0);" onclick="checkAccess(event, 'https://fuba86.github.io/huangguanyule/')" class="tech-card">
-    <div class="card-content">
-        <div class="card-title">经纪公司模拟器</div>
-        
-        <div class="tag-row">
-            <span class="tag ongoing">🔒 内部测试</span>
-            <span class="tag">养成</span>
-            <span class="tag special">水仙</span>
-            <span class="tag special">双性</span>
-            <span class="tag special">生子</span>
-        </div>
+        <a href="https://fuba86.github.io/huangguanyule/" class="tech-card" target="_blank">
+            <div class="card-header">
+                <div class="tag-row">
+                    <span class="tag genre">养成向</span>
+                    <span class="tag ongoing">连载中</span>
+                </div>
+                <div class="card-title">经纪公司模拟器</div>
+                <div class="card-desc">
+                    韩证飞被迫接手公司后，决定把妻子展鹏捧成大明星。娱乐圈的浮华背后，是爱意的养成还是资本的博弈？
+                </div>
+            </div>
 
-        <div class="card-desc">
-            【内测专区】请输入授权密码进入。
-        </div>
-        <div class="card-status">制作中...</div>
+            <div class="card-footer">
+                <div class="tag-row">
+                    <span class="tag special">水仙</span>
+                    <span class="tag special">双性</span>
+                    <span class="tag special">生子</span>
+                </div>
+                <span class="status-badge">Dev In Progress</span>
+            </div>
+        </a>
+
     </div>
-</a>
-
-    </div>
-
-
 
 </body>
 </html>
-
-
