@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>游戏集成页 - Fuba86</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* --- 1. 基础设置 --- */
         :root {
@@ -12,17 +13,17 @@
             --neon-green: #00ff41;   /* 完成绿 */
             --neon-yellow: #ffcc00;  /* 未完结黄 */
             --neon-purple: #bd00ff;  /* 核心类型紫 */
-            --card-bg: rgba(16, 24, 45, 0.65); /* 更深邃的半透明蓝 */
+            --card-bg: rgba(16, 24, 45, 0.35); /* 更透明的玻璃效果 */
             --golden-ratio: 1.618;   /* 黄金比例常数 */
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            padding: 20px;
             min-height: 100vh;
             font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
             color: #ffffff; 
@@ -31,124 +32,372 @@
             align-items: center;
             overflow-x: hidden;
             position: relative;
+            background-color: #0a0a15;
         }
 
         /* --- 2. 背景图层 --- */
-        .bg-image {
+        .bg-container {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
             background: url('https://cdn.pixabay.com/photo/2016/11/29/02/20/cosmos-1866820_1280.jpg') no-repeat center center;
             background-size: cover;
-            z-index: -2; 
+            filter: brightness(0.5) contrast(1.2);
         }
 
         .bg-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
-            z-index: -1;
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+        }
+
+        /* 添加网格线效果 */
+        .grid-overlay {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+        }
+
+        /* 添加扫描线效果 */
+        .scanline {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0) 50%,
+                rgba(0, 0, 0, 0.1) 50%,
+                rgba(0, 0, 0, 0.1)
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* 添加粒子效果 */
+        .particles {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: float 15s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
         }
 
         /* --- 3. 标题样式 --- */
+        .header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: logoShine 3s infinite;
+        }
+
+        @keyframes logoShine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
         h1 {
-            margin-top: 50px;
-            margin-bottom: 60px;
-            font-size: 2.5em;
-            letter-spacing: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2em;
+            letter-spacing: 8px;
             text-align: center;
             text-transform: uppercase;
             color: #fff;
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-            font-weight: 300;
+            text-shadow: 
+                0 0 10px var(--neon-cyan), 
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan);
+            font-weight: 400;
             position: relative;
-            z-index: 10;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 
+                    0 0 10px var(--neon-cyan), 
+                    0 0 20px var(--neon-cyan),
+                    0 0 40px var(--neon-cyan);
+            }
+            to {
+                text-shadow: 
+                    0 0 20px var(--neon-cyan), 
+                    0 0 30px var(--neon-cyan),
+                    0 0 50px var(--neon-cyan),
+                    0 0 60px var(--neon-cyan);
+            }
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+            text-transform: uppercase;
         }
 
         /* --- 4. 游戏列表布局 (Grid) --- */
         .game-container {
             display: grid;
-            /* 关键修改：minmax 改为 450px。
-               这会迫使卡片变宽，当屏幕不够宽时自动换行，保持横向长方形的视觉感 */
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
             width: 100%;
-            max-width: 1400px; /* 允许容器更宽 */
-            padding-bottom: 50px;
+            max-width: 1200px;
+            padding: 0 20px 50px;
             z-index: 10;
         }
 
-        /* --- 5. 黄金比例卡片核心样式 --- */
+        /* --- 5. 卡片核心样式 --- */
         .tech-card {
             position: relative;
             background: var(--card-bg);
-            /* 黄金比例核心代码：宽 / 高 = 1.618 */
-            aspect-ratio: 1.618 / 1; 
-            
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 35px;
+            padding: 25px;
             text-decoration: none;
             color: #ffffff; 
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* 更平滑的动画 */
-            
-            /* 弹性布局：让内容分布在四个角落或上下撑开 */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 12px;
-            overflow: hidden; /* 防止内容溢出破坏形状 */
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        /* 玻璃光泽效果 */
+        .tech-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0)
+            );
+            border-radius: 12px 12px 0 0;
+            pointer-events: none;
         }
 
         /* 悬停效果 */
         .tech-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            background: rgba(20, 30, 50, 0.85);
+            transform: translateY(-8px);
+            background: rgba(20, 30, 50, 0.6);
             border-color: var(--neon-cyan);
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+            box-shadow: 
+                0 0 25px rgba(0, 243, 255, 0.2),
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
         /* 装饰性光条 */
         .tech-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
+            top: 0; 
+            left: 0; 
+            width: 3px; 
+            height: 100%;
             background: linear-gradient(to bottom, var(--neon-cyan), transparent);
             opacity: 0.5;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
         }
+
         .tech-card:hover::before {
             opacity: 1;
-            box-shadow: 0 0 10px var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            width: 4px;
+        }
+
+        /* 卡片角落装饰 */
+        .corner-decoration {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 2px solid var(--neon-cyan);
+            opacity: 0.3;
+            transition: all 0.3s;
+        }
+
+        .corner-decoration.top-left {
+            top: 8px;
+            left: 8px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-decoration.top-right {
+            top: 8px;
+            right: 8px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-decoration.bottom-left {
+            bottom: 8px;
+            left: 8px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-decoration.bottom-right {
+            bottom: 8px;
+            right: 8px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .tech-card:hover .corner-decoration {
+            opacity: 1;
+            width: 20px;
+            height: 20px;
         }
 
         /* 卡片内容布局区 */
         .card-header {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 15px;
         }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
         }
 
         /* 游戏标题 */
         .card-title {
-            font-size: 2em;
+            font-size: 1.6em;
             color: #fff;
-            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
             font-weight: bold;
             letter-spacing: 1px;
             margin: 0;
+            transition: all 0.3s;
         }
         
         .tech-card:hover .card-title {
             color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-cyan);
         }
 
         /* 古风字体 */
@@ -165,91 +414,262 @@
 
         .tag {
             font-size: 0.75em;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.8);
-            border-radius: 20px; /* 胶囊形状更现代 */
-            background: rgba(0,0,0,0.2);
+            color: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            background: rgba(0,0,0,0.3);
             transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
 
         /* 类型标签 (紫色) */
         .tag.genre {
             border-color: var(--neon-purple);
             color: var(--neon-purple);
-            background: rgba(189, 0, 255, 0.1);
+            background: rgba(189, 0, 255, 0.15);
             font-weight: bold;
+            box-shadow: 0 0 8px rgba(189, 0, 255, 0.3);
         }
 
         /* 特殊标签 (红色) */
         .tag.special {
             border-color: var(--neon-pink);
             color: var(--neon-pink);
-            background: rgba(255, 0, 85, 0.1);
+            background: rgba(255, 0, 85, 0.15);
+            box-shadow: 0 0 8px rgba(255, 0, 85, 0.3);
         }
         
         /* 状态标签 */
         .tag.ongoing {
             color: var(--neon-yellow);
             border-color: var(--neon-yellow);
+            background: rgba(255, 204, 0, 0.15);
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
         }
+        
         .tag.completed {
             color: var(--neon-green);
             border-color: var(--neon-green);
+            background: rgba(0, 255, 65, 0.15);
+            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
         }
 
         /* 描述文字 */
         .card-desc {
-            font-size: 1em;
+            font-size: 0.95em;
             line-height: 1.6;
-            color: #cbd5e1;
-            margin-top: 15px;
-            
-            /* 限制行数，防止破坏黄金比例 */
+            color: rgba(255, 255, 255, 0.85);
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         /* 底部状态显示 */
         .status-badge {
-            font-size: 0.8em;
+            font-size: 0.75em;
             letter-spacing: 1px;
-            opacity: 0.6;
+            opacity: 0.7;
             text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* --- 6. 移动端适配 (重要) --- */
         @media (max-width: 768px) {
             .game-container {
-                /* 手机上改为单列 */
                 grid-template-columns: 1fr; 
-                padding: 0 10px;
+                padding: 0 15px 40px;
             }
             .tech-card {
-                /* 手机上取消黄金比例，否则内容会显示不全 */
-                aspect-ratio: auto; 
-                min-height: 220px;
+                padding: 20px;
             }
             h1 {
                 font-size: 1.8em;
+                letter-spacing: 4px;
+            }
+            .header {
+                margin-top: 30px;
+                margin-bottom: 40px;
             }
         }
 
+        /* --- 7. 动态光效 --- */
+        .light-effect {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: skewX(-25deg);
+            transition: all 0.75s;
+            pointer-events: none;
+        }
+
+        .tech-card:hover .light-effect {
+            left: 150%;
+        }
+
+        /* 添加数据流动画效果 */
+        .data-flow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--neon-cyan),
+                transparent
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tech-card:hover .data-flow {
+            opacity: 0.7;
+            animation: dataFlow 2s linear infinite;
+        }
+
+        @keyframes dataFlow {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* 添加卡片编号 */
+        .card-number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.3);
+            z-index: 2;
+        }
+
+        /* 添加统计信息 */
+        .stats-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(16, 24, 45, 0.3);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 添加页脚 */
+        .footer {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8em;
+            z-index: 10;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer a:hover {
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
     </style>
 </head>
 <body>
+    <div class="bg-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+        <div class="grid-overlay"></div>
+        <div class="scanline"></div>
+        <div class="particles" id="particles"></div>
+    </div>
 
-    <div class="bg-image"></div>
-    <div class="bg-overlay"></div>
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-text">F</span>
+            </div>
+            <span class="logo-text">Fuba86</span>
+        </div>
+        <h1>游戏集成页</h1>
+        <div class="subtitle">Interactive Fiction Collection</div>
+    </div>
 
-    <h1>游戏集成页</h1>
+    <div class="stats-container">
+        <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">游戏总数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">2</div>
+            <div class="stat-label">已完结</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">连载中</div>
+        </div>
+    </div>
 
     <div class="game-container">
-
         <a href="https://fuba86.github.io/gurenmeng/" class="tech-card" target="_blank">
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
+            <div class="light-effect"></div>
+            <div class="data-flow"></div>
+            <div class="card-number">01</div>
+            
             <div class="card-header">
                 <div class="tag-row">
                     <span class="tag genre">剧情向</span>
@@ -272,6 +692,14 @@
         </a>
 
         <a href="https://fuba86.github.io/jialanzhengyu/" class="tech-card" target="_blank">
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
+            <div class="light-effect"></div>
+            <div class="data-flow"></div>
+            <div class="card-number">02</div>
+            
             <div class="card-header">
                 <div class="tag-row">
                     <span class="tag genre">剧情向</span>
@@ -294,6 +722,14 @@
         </a>
 
         <a href="https://fuba86.github.io/xiongdiqingren/" class="tech-card" target="_blank">
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
+            <div class="light-effect"></div>
+            <div class="data-flow"></div>
+            <div class="card-number">03</div>
+            
             <div class="card-header">
                 <div class="tag-row">
                     <span class="tag genre">剧情向</span>
@@ -316,6 +752,14 @@
         </a>
 
         <a href="https://fuba86.github.io/huangguanyule/" class="tech-card" target="_blank">
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
+            <div class="light-effect"></div>
+            <div class="data-flow"></div>
+            <div class="card-number">04</div>
+            
             <div class="card-header">
                 <div class="tag-row">
                     <span class="tag genre">养成向</span>
@@ -337,7 +781,73 @@
             </div>
         </a>
 
+        <a href="https://fuba86.github.io/chumo/" class="tech-card" target="_blank">
+            <div class="corner-decoration top-left"></div>
+            <div class="corner-decoration top-right"></div>
+            <div class="corner-decoration bottom-left"></div>
+            <div class="corner-decoration bottom-right"></div>
+            <div class="light-effect"></div>
+            <div class="data-flow"></div>
+            <div class="card-number">05</div>
+            
+            <div class="card-header">
+                <div class="tag-row">
+                    <span class="tag genre">互动向</span>
+                    <span class="tag completed">已完结</span>
+                </div>
+                <div class="card-title ancient-font">青龙摸摸</div>
+                <div class="card-desc">
+                    故人梦衍生，开局只有立绘，小手指点一点，激发青龙的双重人格吧！
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="tag-row">
+                    <span class="tag">无剧情</span>
+                    <span class="tag">点一点</span>
+                    <span class="tag" style="border-color: var(--neon-green); color: var(--neon-green); background: rgba(0, 255, 65, 0.15); box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);">纯绿色</span>
+                </div>
+                <span class="status-badge">Completed</span>
+            </div>
+        </a>
     </div>
 
+    <div class="footer">
+        &copy; 2023 Fuba86 | <a href="https://github.com/fuba86" target="_blank">GitHub</a>
+    </div>
+
+    <script>
+        // 创建粒子效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机位置和大小
+                const size = Math.random() * 3 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // 随机动画时间和延迟
+                const animDuration = Math.random() * 20 + 10;
+                const animDelay = Math.random() * 20;
+                particle.style.animationDuration = `${animDuration}s`;
+                particle.style.animationDelay = `${animDelay}s`;
+                
+                // 随机颜色
+                const colors = ['var(--neon-cyan)', 'var(--neon-purple)', 'var(--neon-pink)', 'var(--neon-green)'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = randomColor;
+                particle.style.boxShadow = `0 0 ${size * 2}px ${randomColor}`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        });
+    </script>
 </body>
 </html>
