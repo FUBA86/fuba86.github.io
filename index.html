@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>游戏集成页 - Fuba86</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 引入思源黑体，重点使用900字重 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. 基础设置 --- */
+        /* --- 1. 基础设置与色彩变量 --- */
         :root {
-            --neon-cyan: #00f3ff;    /* 科技青 */
-            --neon-pink: #ff0055;    /* 警告红 */
-            --neon-green: #00ff41;   /* 完成绿 */
-            --neon-yellow: #ffcc00;  /* 未完结黄 */
-            --neon-purple: #bd00ff;  /* 核心类型紫 */
-            --card-bg: rgba(16, 24, 45, 0.35); /* 更透明的玻璃效果 */
-            --golden-ratio: 1.618;   /* 黄金比例常数 */
+            --bg-cream: #F4EFEA;       /* 复古米白背景 */
+            --rpg-red: #8B3A3A;        /* 暗红 */
+            --rpg-red-dark: #5C2323;   /* 更深的红 */
+            --rpg-green: #2E5D4E;      /* 暗绿 */
+            --rpg-green-dark: #1E3D32; /* 更深的绿 */
+            --rpg-gold: #D4AF37;       /* 复古金 */
+            --text-main: #2D2D2D;      /* 主文字 */
+            --pixel-border: 4px;
         }
 
         * {
@@ -25,829 +27,373 @@
 
         body {
             min-height: 100vh;
-            font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
-            color: #ffffff; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-            position: relative;
-            background-color: #0a0a15;
-        }
-
-        /* --- 2. 背景图层 --- */
-        .bg-container {
-            position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
-        }
-
-        .bg-image {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: url('https://cdn.pixabay.com/photo/2016/11/29/02/20/cosmos-1866820_1280.jpg') no-repeat center center;
-            background-size: cover;
-            filter: brightness(0.5) contrast(1.2);
-        }
-
-        .bg-overlay {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
-        }
-
-        /* 添加网格线效果 */
-        .grid-overlay {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-cream);
+            /* 复古格子地图背景 */
             background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+                linear-gradient(45deg, #E8E3DE 25%, transparent 25%), 
+                linear-gradient(-45deg, #E8E3DE 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #E8E3DE 75%), 
+                linear-gradient(-45deg, transparent 75%, #E8E3DE 75%);
             background-size: 40px 40px;
-            z-index: 1;
-        }
-
-        /* 添加扫描线效果 */
-        .scanline {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0),
-                rgba(255, 255, 255, 0) 50%,
-                rgba(0, 0, 0, 0.1) 50%,
-                rgba(0, 0, 0, 0.1)
-            );
-            background-size: 100% 4px;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        /* 添加粒子效果 */
-        .particles {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--neon-cyan);
-            animation: float 15s infinite linear;
-            opacity: 0.6;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-100vh) scale(1);
-                opacity: 0;
-            }
-        }
-
-        /* --- 3. 标题样式 --- */
-        .header {
-            width: 100%;
+            background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 40px;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. 标题区域 (修改重点) --- */
+        .header {
+            text-align: center;
             margin-bottom: 50px;
             position: relative;
             z-index: 10;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 20px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logo::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255, 255, 255, 0.3),
-                transparent
-            );
-            transform: rotate(45deg);
-            animation: logoShine 3s infinite;
-        }
-
-        @keyframes logoShine {
-            0% {
-                transform: translateX(-100%) rotate(45deg);
-            }
-            100% {
-                transform: translateX(100%) rotate(45deg);
-            }
-        }
-
-        .logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.2em;
-            letter-spacing: 8px;
-            text-align: center;
-            text-transform: uppercase;
-            color: #fff;
+        .main-title {
+            /* 使用大号黑体 */
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 900; /* 最粗字重 */
+            font-size: 4em;   /* 更大 */
+            
+            color: var(--rpg-red-dark);
+            
+            /* 卡通风格效果：描边 + 立体投影 */
+            -webkit-text-stroke: 3px var(--rpg-green-dark); /* 绿色描边 */
+            paint-order: stroke fill; /* 确保描边在填充下方 */
+            
             text-shadow: 
-                0 0 10px var(--neon-cyan), 
-                0 0 20px var(--neon-cyan),
-                0 0 40px var(--neon-cyan);
-            font-weight: 400;
-            position: relative;
-            animation: glow 2s ease-in-out infinite alternate;
+                4px 4px 0px #FFF,   /* 白色打底，增加立体感 */
+                7px 7px 0px var(--rpg-green); /* 绿色投影 */
+                
+            margin-bottom: 15px;
+            line-height: 1.3;
+            letter-spacing: 2px;
         }
 
-        @keyframes glow {
-            from {
-                text-shadow: 
-                    0 0 10px var(--neon-cyan), 
-                    0 0 20px var(--neon-cyan),
-                    0 0 40px var(--neon-cyan);
-            }
-            to {
-                text-shadow: 
-                    0 0 20px var(--neon-cyan), 
-                    0 0 30px var(--neon-cyan),
-                    0 0 50px var(--neon-cyan),
-                    0 0 60px var(--neon-cyan);
-            }
+        .sub-title {
+            font-family: 'Press Start 2P', cursive; /* 副标题保留像素风，作为点缀 */
+            font-size: 0.8em;
+            color: var(--bg-cream);
+            background: var(--rpg-green);
+            padding: 10px 20px;
+            border: 4px solid var(--rpg-green-dark);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+            display: inline-block;
         }
 
-        .subtitle {
-            font-size: 0.9em;
-            letter-spacing: 3px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
-
-        /* --- 4. 游戏列表布局 (Grid) --- */
-        .game-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1200px;
-            padding: 0 20px 50px;
+        /* --- 3. 统计栏 --- */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 700;
             z-index: 10;
         }
 
-        /* --- 5. 卡片核心样式 --- */
-        .tech-card {
-            position: relative;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            text-decoration: none;
-            color: #ffffff; 
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        .stat-box {
+            background: #FFF;
+            border: 4px solid var(--rpg-red);
+            padding: 10px 20px;
+            box-shadow: 6px 6px 0px var(--rpg-red-dark);
             display: flex;
-            flex-direction: column;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            overflow: hidden;
-            height: 100%;
+            align-items: center;
+            gap: 10px;
+            color: var(--rpg-red-dark);
+            font-size: 1.1em;
         }
 
-        /* 玻璃光泽效果 */
-        .tech-card::after {
+        .heart-icon {
+            color: var(--rpg-red);
+            font-size: 1.2em;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        /* --- 4. 游戏列表布局 --- */
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            z-index: 10;
+        }
+
+        /* --- 5. RPG卡片样式 --- */
+        .rpg-card {
+            position: relative;
+            background: #FFF;
+            border: 4px solid var(--rpg-green-dark);
+            box-shadow: 8px 8px 0px var(--rpg-green);
+            padding: 0;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-header-bg {
+            background: var(--rpg-red);
+            border-bottom: 4px solid var(--rpg-red-dark);
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        /* 装饰角标 */
+        .card-header-bg::after {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
             right: 0;
-            height: 50%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0.1),
-                rgba(255, 255, 255, 0)
-            );
-            border-radius: 12px 12px 0 0;
-            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            background: var(--rpg-red-dark);
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
         }
 
         /* 悬停效果 */
-        .tech-card:hover {
-            transform: translateY(-8px);
-            background: rgba(20, 30, 50, 0.6);
-            border-color: var(--neon-cyan);
-            box-shadow: 
-                0 0 25px rgba(0, 243, 255, 0.2),
-                0 15px 35px rgba(0, 0, 0, 0.3),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        .rpg-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--rpg-green);
+            border-color: var(--rpg-red);
+        }
+        
+        .rpg-card:hover .card-header-bg {
+            background: var(--rpg-green);
+            border-bottom-color: var(--rpg-green-dark);
         }
 
-        /* 装饰性光条 */
-        .tech-card::before {
-            content: '';
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 3px; 
-            height: 100%;
-            background: linear-gradient(to bottom, var(--neon-cyan), transparent);
-            opacity: 0.5;
-            transition: all 0.3s;
+        /* 游戏标题 (卡片内) */
+        .game-title {
+            /* 卡片内标题也改为黑体，但字号适中 */
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 900;
+            font-size: 1.4em;
+            color: #FFF;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+            line-height: 1.4;
         }
 
-        .tech-card:hover::before {
-            opacity: 1;
-            box-shadow: 0 0 15px var(--neon-cyan);
-            width: 4px;
+        .card-content {
+            padding: 20px;
+            background-image: radial-gradient(#DDD 1px, transparent 1px);
+            background-size: 10px 10px;
+            flex-grow: 1;
         }
 
-        /* 卡片角落装饰 */
-        .corner-decoration {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            border: 2px solid var(--neon-cyan);
-            opacity: 0.3;
-            transition: all 0.3s;
-        }
-
-        .corner-decoration.top-left {
-            top: 8px;
-            left: 8px;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .corner-decoration.top-right {
-            top: 8px;
-            right: 8px;
-            border-left: none;
-            border-bottom: none;
-        }
-
-        .corner-decoration.bottom-left {
-            bottom: 8px;
-            left: 8px;
-            border-right: none;
-            border-top: none;
-        }
-
-        .corner-decoration.bottom-right {
-            bottom: 8px;
-            right: 8px;
-            border-left: none;
-            border-top: none;
-        }
-
-        .tech-card:hover .corner-decoration {
-            opacity: 1;
-            width: 20px;
-            height: 20px;
-        }
-
-        /* 卡片内容布局区 */
-        .card-header {
+        /* 标签系统 */
+        .tags {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            position: relative;
-            z-index: 2;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            font-size: 0.75em;
+            padding: 4px 8px;
+            border: 2px solid;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .tag.genre { 
+            background: var(--rpg-green); 
+            border-color: var(--rpg-green-dark); 
+            color: #FFF; 
+        }
+        .tag.status-ongoing { 
+            background: var(--rpg-gold); 
+            color: #000; 
+            border-color: #000; 
+        }
+        .tag.status-completed { 
+            background: var(--rpg-red); 
+            color: #FFF; 
+            border-color: var(--rpg-red-dark); 
+        }
+        .tag.special { 
+            background: #FFF; 
+            border-color: var(--rpg-red-dark); 
+            color: var(--rpg-red-dark); 
+        }
+
+        .card-desc {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #444;
             margin-bottom: 15px;
         }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            position: relative;
-            z-index: 2;
-            margin-top: auto;
-        }
-
-        /* 游戏标题 */
-        .card-title {
-            font-size: 1.6em;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin: 0;
-            transition: all 0.3s;
-        }
-        
-        .tech-card:hover .card-title {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px var(--neon-cyan);
-        }
-
-        /* 古风字体 */
-        .ancient-font {
-            font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-        }
-
-        /* 标签栏 */
-        .tag-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            font-size: 0.75em;
-            padding: 4px 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.9);
-            border-radius: 15px;
-            background: rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-
-        /* 类型标签 (紫色) */
-        .tag.genre {
-            border-color: var(--neon-purple);
-            color: var(--neon-purple);
-            background: rgba(189, 0, 255, 0.15);
-            font-weight: bold;
-            box-shadow: 0 0 8px rgba(189, 0, 255, 0.3);
-        }
-
-        /* 特殊标签 (红色) */
-        .tag.special {
-            border-color: var(--neon-pink);
-            color: var(--neon-pink);
-            background: rgba(255, 0, 85, 0.15);
-            box-shadow: 0 0 8px rgba(255, 0, 85, 0.3);
-        }
-        
-        /* 状态标签 */
-        .tag.ongoing {
-            color: var(--neon-yellow);
-            border-color: var(--neon-yellow);
-            background: rgba(255, 204, 0, 0.15);
-            box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
-        }
-        
-        .tag.completed {
-            color: var(--neon-green);
-            border-color: var(--neon-green);
-            background: rgba(0, 255, 65, 0.15);
-            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
-        }
-
-        /* 描述文字 */
-        .card-desc {
-            font-size: 0.95em;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.85);
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-        }
-
-        /* 底部状态显示 */
-        .status-badge {
-            font-size: 0.75em;
-            letter-spacing: 1px;
-            opacity: 0.7;
-            text-transform: uppercase;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* --- 6. 移动端适配 (重要) --- */
-        @media (max-width: 768px) {
-            .game-container {
-                grid-template-columns: 1fr; 
-                padding: 0 15px 40px;
-            }
-            .tech-card {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 1.8em;
-                letter-spacing: 4px;
-            }
-            .header {
-                margin-top: 30px;
-                margin-bottom: 40px;
-            }
-        }
-
-        /* --- 7. 动态光效 --- */
-        .light-effect {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            transform: skewX(-25deg);
-            transition: all 0.75s;
-            pointer-events: none;
-        }
-
-        .tech-card:hover .light-effect {
-            left: 150%;
-        }
-
-        /* 添加数据流动画效果 */
-        .data-flow {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--neon-cyan),
-                transparent
-            );
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tech-card:hover .data-flow {
-            opacity: 0.7;
-            animation: dataFlow 2s linear infinite;
-        }
-
-        @keyframes dataFlow {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        /* 添加卡片编号 */
-        .card-number {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8em;
-            color: rgba(255, 255, 255, 0.3);
-            z-index: 2;
-        }
-
-        /* 添加统计信息 */
-        .stats-container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-            margin-bottom: 30px;
-            z-index: 10;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            background: rgba(16, 24, 45, 0.3);
-            padding: 15px 25px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            min-width: 120px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.5);
+            border-top: 2px dashed #CCC;
+            font-weight: 700;
+            font-size: 0.85em;
+            color: #555;
         }
 
-        .stat-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8em;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        .level-badge {
+            color: var(--rpg-green-dark);
+            font-weight: 900;
         }
 
-        .stat-label {
-            font-size: 0.8em;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* 添加页脚 */
-        .footer {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8em;
-            z-index: 10;
-            margin-top: auto;
-        }
-
-        .footer a {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .footer a:hover {
-            text-shadow: 0 0 10px var(--neon-cyan);
+        /* --- 6. 移动端适配 --- */
+        @media (max-width: 768px) {
+            .main-title { 
+                font-size: 2.5em; 
+                -webkit-text-stroke: 2px var(--rpg-green-dark);
+                text-shadow: 3px 3px 0px #FFF, 5px 5px 0px var(--rpg-green);
+            }
+            .game-container { grid-template-columns: 1fr; gap: 30px; }
+            .stats-bar { flex-direction: column; gap: 15px; align-items: center; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-container">
-        <div class="bg-image"></div>
-        <div class="bg-overlay"></div>
-        <div class="grid-overlay"></div>
-        <div class="scanline"></div>
-        <div class="particles" id="particles"></div>
-    </div>
 
-    <div class="header">
-        <div class="logo-container">
-            <div class="logo">
-                <span class="logo-text">F</span>
-            </div>
-            <span class="logo-text">Fuba86</span>
-        </div>
-        <h1>游戏集成页</h1>
-        <div class="subtitle">Interactive Fiction Collection</div>
-    </div>
+    <header class="header">
+        <h1 class="main-title">游戏集成页</h1>
+        <div class="sub-title">Fuba86's Collection</div>
+    </header>
 
-    <div class="stats-container">
-        <div class="stat-item">
-            <div class="stat-value">5</div>
-            <div class="stat-label">游戏总数</div>
+    <div class="stats-bar">
+        <div class="stat-box">
+            <span class="heart-icon">♥</span> 总数: 5
         </div>
-        <div class="stat-item">
-            <div class="stat-value">2</div>
-            <div class="stat-label">已完结</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-value">3</div>
-            <div class="stat-label">连载中</div>
+        <div class="stat-box">
+            <span class="heart-icon">★</span> 已完结: 2
         </div>
     </div>
 
     <div class="game-container">
-        <a href="https://fuba86.github.io/gurenmeng/" class="tech-card" target="_blank">
-            <div class="corner-decoration top-left"></div>
-            <div class="corner-decoration top-right"></div>
-            <div class="corner-decoration bottom-left"></div>
-            <div class="corner-decoration bottom-right"></div>
-            <div class="light-effect"></div>
-            <div class="data-flow"></div>
-            <div class="card-number">01</div>
-            
-            <div class="card-header">
-                <div class="tag-row">
+
+        <a href="https://fuba86.github.io/gurenmeng/" class="rpg-card" target="_blank">
+            <div class="card-header-bg">
+                <div class="game-title">故人梦</div>
+            </div>
+            <div class="card-content">
+                <div class="tags">
                     <span class="tag genre">剧情向</span>
-                    <span class="tag ongoing">连载中</span>
+                    <span class="tag status-ongoing">连载中</span>
                 </div>
-                <div class="card-title ancient-font">故人梦</div>
                 <div class="card-desc">
                     定海庄，萧逸才在一棵树下找到了昏迷的青龙。一段尘封的往事，随着二人的重逢缓缓揭开帷幕...
                 </div>
             </div>
-            
             <div class="card-footer">
-                <div class="tag-row">
-                    <span class="tag">古风仙侠</span>
+                <div class="tags">
                     <span class="tag special">诛仙同人</span>
-                    <span class="tag special">耽美</span>
                 </div>
-                <span class="status-badge">Updating</span>
+                <div class="level-badge">Lv.01</div>
             </div>
         </a>
 
-        <a href="https://fuba86.github.io/jialanzhengyu/" class="tech-card" target="_blank">
-            <div class="corner-decoration top-left"></div>
-            <div class="corner-decoration top-right"></div>
-            <div class="corner-decoration bottom-left"></div>
-            <div class="corner-decoration bottom-right"></div>
-            <div class="light-effect"></div>
-            <div class="data-flow"></div>
-            <div class="card-number">02</div>
-            
-            <div class="card-header">
-                <div class="tag-row">
+        <a href="https://fuba86.github.io/jialanzhengyu/" class="rpg-card" target="_blank">
+            <div class="card-header-bg">
+                <div class="game-title">融合之后</div>
+            </div>
+            <div class="card-content">
+                <div class="tags">
                     <span class="tag genre">剧情向</span>
-                    <span class="tag completed">已完结</span>
+                    <span class="tag status-completed">已完结</span>
                 </div>
-                <div class="card-title">融合之后</div>
                 <div class="card-desc">
                     时空融合的那晚，当何正钰去找陈嘉岚时，都发生了什么？两个世界的法则碰撞，情感与本能的交织。
                 </div>
             </div>
-
             <div class="card-footer">
-                <div class="tag-row">
-                    <span class="tag">ABO</span>
+                <div class="tags">
                     <span class="tag special">女A男O</span>
-                    <span class="tag special">强制</span>
                 </div>
-                <span class="status-badge">Completed</span>
+                <div class="level-badge">CLEAR</div>
             </div>
         </a>
 
-        <a href="https://fuba86.github.io/xiongdiqingren/" class="tech-card" target="_blank">
-            <div class="corner-decoration top-left"></div>
-            <div class="corner-decoration top-right"></div>
-            <div class="corner-decoration bottom-left"></div>
-            <div class="corner-decoration bottom-right"></div>
-            <div class="light-effect"></div>
-            <div class="data-flow"></div>
-            <div class="card-number">03</div>
-            
-            <div class="card-header">
-                <div class="tag-row">
+        <a href="https://fuba86.github.io/xiongdiqingren/" class="rpg-card" target="_blank">
+            <div class="card-header-bg">
+                <div class="game-title">兄弟情人</div>
+            </div>
+            <div class="card-content">
+                <div class="tags">
                     <span class="tag genre">剧情向</span>
-                    <span class="tag ongoing">连载中</span>
+                    <span class="tag status-ongoing">连载中</span>
                 </div>
-                <div class="card-title">兄弟情人</div>
                 <div class="card-desc">
                     最近大哥遇到了点小麻烦，一个叫何正钰的律师在调查他。在这场猫鼠游戏中，谁才是真正的猎物？
                 </div>
             </div>
-
             <div class="card-footer">
-                <div class="tag-row">
+                <div class="tags">
                     <span class="tag special">强制爱</span>
-                    <span class="tag special">监禁</span>
-                    <span class="tag special">非典型关系</span>
                 </div>
-                <span class="status-badge">Updating</span>
+                <div class="level-badge">Lv.03</div>
             </div>
         </a>
 
-        <a href="https://fuba86.github.io/huangguanyule/" class="tech-card" target="_blank">
-            <div class="corner-decoration top-left"></div>
-            <div class="corner-decoration top-right"></div>
-            <div class="corner-decoration bottom-left"></div>
-            <div class="corner-decoration bottom-right"></div>
-            <div class="light-effect"></div>
-            <div class="data-flow"></div>
-            <div class="card-number">04</div>
-            
-            <div class="card-header">
-                <div class="tag-row">
+        <a href="https://fuba86.github.io/huangguanyule/" class="rpg-card" target="_blank">
+            <div class="card-header-bg">
+                <div class="game-title">经纪公司模拟器</div>
+            </div>
+            <div class="card-content">
+                <div class="tags">
                     <span class="tag genre">养成向</span>
-                    <span class="tag ongoing">连载中</span>
+                    <span class="tag status-ongoing">连载中</span>
                 </div>
-                <div class="card-title">经纪公司模拟器</div>
                 <div class="card-desc">
                     韩证飞被迫接手公司后，决定把妻子展鹏捧成大明星。娱乐圈的浮华背后，是爱意的养成还是资本的博弈？
                 </div>
             </div>
-
             <div class="card-footer">
-                <div class="tag-row">
+                <div class="tags">
                     <span class="tag special">水仙</span>
-                    <span class="tag special">双性</span>
-                    <span class="tag special">生子</span>
                 </div>
-                <span class="status-badge">Dev In Progress</span>
+                <div class="level-badge">Lv.04</div>
             </div>
         </a>
 
-        <a href="https://fuba86.github.io/chumo/" class="tech-card" target="_blank">
-            <div class="corner-decoration top-left"></div>
-            <div class="corner-decoration top-right"></div>
-            <div class="corner-decoration bottom-left"></div>
-            <div class="corner-decoration bottom-right"></div>
-            <div class="light-effect"></div>
-            <div class="data-flow"></div>
-            <div class="card-number">05</div>
-            
-            <div class="card-header">
-                <div class="tag-row">
+        <a href="https://fuba86.github.io/chumo/" class="rpg-card" target="_blank">
+            <div class="card-header-bg">
+                <div class="game-title">青龙摸摸</div>
+            </div>
+            <div class="card-content">
+                <div class="tags">
                     <span class="tag genre">互动向</span>
-                    <span class="tag completed">已完结</span>
+                    <span class="tag status-completed">已完结</span>
                 </div>
-                <div class="card-title ancient-font">青龙摸摸</div>
                 <div class="card-desc">
                     故人梦衍生，开局只有立绘，小手指点一点，激发青龙的双重人格吧！
                 </div>
             </div>
-
             <div class="card-footer">
-                <div class="tag-row">
-                    <span class="tag">无剧情</span>
-                    <span class="tag">点一点</span>
-                    <span class="tag" style="border-color: var(--neon-green); color: var(--neon-green); background: rgba(0, 255, 65, 0.15); box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);">纯绿色</span>
+                <div class="tags">
+                    <span class="tag special">纯绿色</span>
                 </div>
-                <span class="status-badge">Completed</span>
+                <div class="level-badge">BONUS</div>
             </div>
         </a>
+
     </div>
 
-    <div class="footer">
-        &copy; 2023 Fuba86 | <a href="https://github.com/fuba86" target="_blank">GitHub</a>
-    </div>
+    <footer style="margin-top: 50px; font-weight: 900; font-size: 0.8em; color: var(--rpg-green-dark);">
+        &copy; 2023 Fuba86 // GAME OVER
+    </footer>
 
-    <script>
-        // 创建粒子效果
-        document.addEventListener('DOMContentLoaded', function() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // 随机位置和大小
-                const size = Math.random() * 3 + 1;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                
-                // 随机动画时间和延迟
-                const animDuration = Math.random() * 20 + 10;
-                const animDelay = Math.random() * 20;
-                particle.style.animationDuration = `${animDuration}s`;
-                particle.style.animationDelay = `${animDelay}s`;
-                
-                // 随机颜色
-                const colors = ['var(--neon-cyan)', 'var(--neon-purple)', 'var(--neon-pink)', 'var(--neon-green)'];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.background = randomColor;
-                particle.style.boxShadow = `0 0 ${size * 2}px ${randomColor}`;
-                
-                particlesContainer.appendChild(particle);
-            }
-        });
-    </script>
 </body>
 </html>
