@@ -15,6 +15,8 @@
             --rpg-green: #2E5D4E;      /* 暗绿 */
             --rpg-green-dark: #1E3D32; /* 更深的绿 */
             --rpg-gold: #D4AF37;       /* 复古金 */
+            --rpg-purple: #6B4C9A;     /* 紫色，用于桌宠卡片 */
+            --rpg-purple-dark: #4A3470; /* 更深的紫 */
             --text-main: #2D2D2D;      /* 主文字 */
             --pixel-border: 4px;
         }
@@ -45,7 +47,7 @@
             overflow-x: hidden;
         }
 
-        /* --- 2. 标题区域 (修改重点) --- */
+        /* --- 2. 标题区域 --- */
         .header {
             text-align: center;
             margin-bottom: 50px;
@@ -229,6 +231,11 @@
             border-color: var(--rpg-red-dark); 
             color: var(--rpg-red-dark); 
         }
+        .tag.desktop-pet {
+            background: var(--rpg-purple);
+            border-color: var(--rpg-purple-dark);
+            color: #FFF;
+        }
 
         .card-desc {
             font-size: 0.95em;
@@ -254,6 +261,60 @@
             font-weight: 900;
         }
 
+        /* 桌宠卡片特殊样式 */
+        .desktop-pet-card {
+            border-color: var(--rpg-purple-dark);
+            box-shadow: 8px 8px 0px var(--rpg-purple);
+        }
+
+        .desktop-pet-card .card-header-bg {
+            background: var(--rpg-purple);
+            border-bottom-color: var(--rpg-purple-dark);
+        }
+
+        .desktop-pet-card .card-header-bg::after {
+            background: var(--rpg-purple-dark);
+        }
+
+        .desktop-pet-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--rpg-purple);
+            border-color: var(--rpg-purple-dark);
+        }
+        
+        .desktop-pet-card:hover .card-header-bg {
+            background: var(--rpg-purple-dark);
+            border-bottom-color: var(--rpg-purple);
+        }
+
+        .download-button {
+            display: inline-block;
+            background: var(--rpg-purple);
+            color: white;
+            padding: 8px 15px;
+            border: 2px solid var(--rpg-purple-dark);
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .download-button:hover {
+            background: var(--rpg-purple-dark);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+        }
+
+        .creator-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--rpg-purple-dark);
+            font-weight: 700;
+        }
+
         /* --- 6. 移动端适配 --- */
         @media (max-width: 768px) {
             .main-title { 
@@ -275,7 +336,7 @@
 
     <div class="stats-bar">
         <div class="stat-box">
-            <span class="heart-icon">♥</span> 总数: 5
+            <span class="heart-icon">♥</span> 总数: 6
         </div>
         <div class="stat-box">
             <span class="heart-icon">★</span> 已完结: 2
@@ -388,6 +449,33 @@
                 <div class="level-badge">BONUS</div>
             </div>
         </a>
+
+        <!-- 新增桌宠卡片 -->
+        <div class="rpg-card desktop-pet-card">
+            <div class="card-header-bg">
+                <div class="game-title">青龙圣使桌宠</div>
+            </div>
+            <div class="card-content">
+                <div class="tags">
+                    <span class="tag desktop-pet">桌宠</span>
+                    <span class="tag status-completed">可下载</span>
+                </div>
+                <div class="card-desc">
+                    青龙圣使降临你的桌面！可爱互动，陪伴你的日常。点击下载，让青龙圣使成为你的桌面伙伴吧！
+                    <br><br>
+                    <span style="font-size: 0.9em; color: #666;">下载密码: 1234</span>
+                </div>
+                <a href="https://wwbip.lanzoum.com/iImGm3lyqabg" class="download-button" target="_blank">
+                    立即下载
+                </a>
+            </div>
+            <div class="card-footer">
+                <div class="creator-badge">
+                    <span>制作人: 哞哞</span>
+                </div>
+                <div class="level-badge">DESKTOP</div>
+            </div>
+        </div>
 
     </div>
 
